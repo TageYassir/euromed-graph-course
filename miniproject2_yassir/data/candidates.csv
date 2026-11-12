@@ -1,0 +1,11 @@
+candidate_id,name,home_city,remote_available,onsite_cities
+C01,Amina Idrissi,Rabat,true,"Rabat, Casablanca"
+C02,Youssef Karim,Casablanca,true,Casablanca
+C03,Sara Haddad,Fez,true,Fez
+C04,Omar Naji,Rabat,false,Rabat
+C05,Lina Faris,Marrakech,true,"Marrakech, Rabat"
+C06,Adam Benali,Casablanca,false,Casablanca
+C07,Adam Benali,Tangier,true,Tangier
+C08,Kenza Tazi,Fez,false,Fez
+C09,Mehdi Alaoui,Casablanca,true,"Casablanca, Rabat"
+C10,Imane Chafik,Rabat,true,

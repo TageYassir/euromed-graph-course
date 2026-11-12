@@ -1,0 +1,12 @@
+experience_id,candidate_id,org_id,role,start_date,end_date,skills_used
+E01,C01,O01,Graph Developer,2024-01-01,2025-12-31,"S01,S03,S02"
+E02,C02,O02,Data Engineer,2023-03-01,,"S01,S06,S04"
+E03,C03,O02,ML Intern,2025-01-01,2025-10-31,"S01,S05"
+E04,C04,O01,Backend Developer,2022-02-01,2024-09-30,"S07,S08"
+E05,C05,O03,KG Consultant,2025-06-01,,"S01,S09"
+E06,C06,O02,BI Analyst,2024-06-01,,"S06,S08"
+E07,C07,O04,Data Engineer,2024-01-01,2025-06-30,"S01,S11"
+E08,C08,O01,Analyst,2023-01-01,2024-12-31,"S06,S12"
+E09,C09,O05,Consultant,2025-01-01,,"S01,S03"
+E10,C05,O04,Freelance KG,2025-08-01,,"S03,S09"
+E11,C10,O02,Intern,2026-01-01,2026-06-30,S01

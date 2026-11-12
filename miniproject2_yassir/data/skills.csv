@@ -1,0 +1,15 @@
+skill_id,canonical_label,category,known_aliases
+S01,Python,Programming,Python 3
+S02,Cypher,Query language,Neo4j Cypher
+S03,Neo4j,Graph database,Neo4j DB
+S04,Docker,DevOps,Docker Engine
+S05,Machine Learning,AI,"ML, machine learning"
+S06,SQL,Query language,Structured Query Language
+S07,Java,Programming,Java SE
+S08,JavaScript,Programming,JS
+S09,RDF,Knowledge representation,Resource Description Framework
+S10,C++,Programming,CPP
+S11,Kubernetes,DevOps,K8s
+S12,Power BI,Data Viz,PBI
+S13,React,Web,ReactJS
+S14,HTML,Web,ML

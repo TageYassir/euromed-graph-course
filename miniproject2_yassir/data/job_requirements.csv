@@ -1,0 +1,16 @@
+job_id,skill_id,mandatory,minimum_level
+J01,S01,true,2
+J01,S03,true,2
+J01,S02,true,2
+J01,S04,false,1
+J02,S01,true,3
+J02,S05,true,2
+J02,S04,false,2
+J03,S06,true,3
+J03,S01,false,2
+J04,S09,true,2
+J04,S03,true,2
+J05,S10,true,2
+J05,S01,false,2
+J06,S13,true,2
+J07,S01,true,1
