@@ -1,0 +1,72 @@
+[
+  {
+    "id": "X01",
+    "question": "List the closed jobs.",
+    "cypher": "MATCH (j:Job {status: 'CLOSED'})\nRETURN j.jobId AS jobId, j.title AS title"
+  },
+  {
+    "id": "X02",
+    "question": "Which candidates live in Fez?",
+    "cypher": "MATCH (c:Candidate)-[:LIVES_IN]->(:City {name: 'Fez'})\nRETURN c.candidateId AS candidateId, c.name AS name"
+  },
+  {
+    "id": "X03",
+    "question": "Which skills does candidate C02 claim, with level and verification status?",
+    "cypher": "MATCH (:Candidate {candidateId: 'C02'})-[:MAKES_CLAIM]->(cl:SkillClaim)-[:ABOUT_SKILL]->(s:Skill)\nRETURN s.name AS skill, cl.level AS level, cl.verificationStatus AS verificationStatus"
+  },
+  {
+    "id": "X04",
+    "question": "Which candidates claim K8s?",
+    "cypher": "MATCH (:Alias {key: toLower('K8s')})-[:ALIAS_OF]->(s:Skill)<-[:ABOUT_SKILL]-(cl:SkillClaim)<-[:MAKES_CLAIM]-(c:Candidate)\nRETURN c.candidateId AS candidateId, c.name AS name, cl.level AS level, cl.verificationStatus AS verificationStatus"
+  },
+  {
+    "id": "X05",
+    "question": "What are all the requirements of job J05, mandatory and preferred?",
+    "cypher": "MATCH (:Job {jobId: 'J05'})-[r:REQUIRES_SKILL]->(s:Skill)\nRETURN s.name AS skill, r.priority AS priority, r.minLevel AS minLevel"
+  },
+  {
+    "id": "X06",
+    "question": "Which candidates meet all mandatory skill requirements of job J06?",
+    "cypher": "MATCH (j:Job {jobId: 'J06'})-[:REQUIRES_SKILL {priority: 'MANDATORY'}]->(ms:Skill)\nWITH j, count(ms) AS nMand\nMATCH (j)-[r:REQUIRES_SKILL {priority: 'MANDATORY'}]->(s:Skill)<-[:ABOUT_SKILL]-(cl:SkillClaim {verificationStatus: 'VERIFIED'})<-[:MAKES_CLAIM]-(c:Candidate)\nWHERE cl.level >= r.minLevel\nWITH nMand, c, count(DISTINCT s) AS nMet\nWHERE nMet = nMand\nRETURN c.candidateId AS candidateId, c.name AS name"
+  },
+  {
+    "id": "X07",
+    "question": "Where has candidate C04 worked, and when?",
+    "cypher": "MATCH (:Candidate {candidateId: 'C04'})-[:HAS_EXPERIENCE]->(e:WorkExperience)-[:AT_ORGANIZATION]->(o:Organization)\nRETURN o.name AS organization, e.roleTitle AS role, e.startDate AS startDate, e.endDate AS endDate\nORDER BY e.startDate"
+  },
+  {
+    "id": "X08",
+    "question": "Show the full application history of candidate C09 for job J05, in order.",
+    "cypher": "MATCH (:Candidate {candidateId: 'C09'})-[:SUBMITTED]->(a:Application)-[:FOR_JOB]->(:Job {jobId: 'J05'}), (a)-[:HAS_EVENT]->(ev:ApplicationEvent)\nRETURN ev.type AS type, ev.at AS at\nORDER BY ev.at"
+  },
+  {
+    "id": "X09",
+    "question": "How many skill claims does each candidate have?",
+    "cypher": "MATCH (c:Candidate)-[:MAKES_CLAIM]->(cl:SkillClaim)\nRETURN c.candidateId AS candidateId, c.name AS name, count(cl) AS claims\nORDER BY claims DESC"
+  },
+  {
+    "id": "X10",
+    "question": "Which candidates are available onsite in the city of job J06?",
+    "cypher": "MATCH (:Job {jobId: 'J06'})-[:BASED_IN]->(city:City)<-[:AVAILABLE_ONSITE_IN]-(c:Candidate)\nRETURN c.candidateId AS candidateId, c.name AS name, city.name AS city"
+  },
+  {
+    "id": "X11",
+    "question": "Which work experiences support candidate C03's Machine Learning claim?",
+    "cypher": "MATCH (:Candidate {candidateId: 'C03'})-[:MAKES_CLAIM]->(cl:SkillClaim)-[:ABOUT_SKILL]->(:Skill {name: 'Machine Learning'})\nMATCH (cl)-[:EVIDENCED_BY]->(e:WorkExperience)-[:AT_ORGANIZATION]->(o:Organization)\nRETURN e.experienceId AS experienceId, e.roleTitle AS role, o.name AS organization"
+  },
+  {
+    "id": "X12",
+    "question": "Which jobs are published by organizations located in Casablanca?",
+    "cypher": "MATCH (j:Job)-[:PUBLISHED_BY]->(o:Organization)-[:LOCATED_IN]->(:City {name: 'Casablanca'})\nRETURN j.jobId AS jobId, j.title AS title, o.name AS organization"
+  },
+  {
+    "id": "X13",
+    "question": "Who assessed candidate C01's Python skill, and when?",
+    "cypher": "MATCH (:Candidate {candidateId: 'C01'})-[:MAKES_CLAIM]->(cl:SkillClaim)-[:ABOUT_SKILL]->(:Skill {name: 'Python'})\nMATCH (sa:SkillAssessment)-[:ASSESSES]->(cl)\nOPTIONAL MATCH (sa)-[:ASSESSED_BY]->(a:Assessor)\nRETURN sa.assessedAt AS assessedAt, sa.level AS level, a.name AS assessor\nORDER BY sa.assessedAt"
+  },
+  {
+    "id": "X14",
+    "question": "Which candidates worked at a company in the same city where they live?",
+    "cypher": "MATCH (c:Candidate)-[:LIVES_IN]->(city:City)<-[:LOCATED_IN]-(o:Organization)<-[:AT_ORGANIZATION]-(:WorkExperience)<-[:HAS_EXPERIENCE]-(c)\nRETURN DISTINCT c.candidateId AS candidateId, c.name AS name, city.name AS city"
+  }
+]

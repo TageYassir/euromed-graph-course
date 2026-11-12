@@ -1,0 +1,134 @@
+[
+  {
+    "id": "B01",
+    "difficulty": "easy",
+    "question": "List all open jobs with their titles.",
+    "cypher": "MATCH (j:Job {status: 'OPEN'}) RETURN j.jobId AS jobId, j.title AS title"
+  },
+  {
+    "id": "B02",
+    "difficulty": "easy",
+    "question": "Which jobs are based in Rabat?",
+    "cypher": "MATCH (j:Job)-[:BASED_IN]->(:City {name: 'Rabat'}) RETURN j.jobId AS jobId, j.title AS title"
+  },
+  {
+    "id": "B03",
+    "difficulty": "easy",
+    "question": "Which candidates are open to remote work?",
+    "cypher": "MATCH (c:Candidate {remoteAvailable: true}) RETURN c.candidateId AS candidateId, c.name AS name"
+  },
+  {
+    "id": "B04",
+    "difficulty": "medium",
+    "question": "Which skills does candidate C05 claim and at what level?",
+    "cypher": "MATCH (:Candidate {candidateId: 'C05'})-[:MAKES_CLAIM]->(cl:SkillClaim)-[:ABOUT_SKILL]->(s:Skill) RETURN s.name AS skill, cl.level AS level"
+  },
+  {
+    "id": "B05",
+    "difficulty": "medium",
+    "question": "Which candidates have a verified advanced-level Python claim?",
+    "cypher": "MATCH (c:Candidate)-[:MAKES_CLAIM]->(cl:SkillClaim {verificationStatus: 'VERIFIED', level: 3})-[:ABOUT_SKILL]->(:Skill {name: 'Python'}) RETURN c.candidateId AS candidateId, c.name AS name"
+  },
+  {
+    "id": "B06",
+    "difficulty": "medium",
+    "question": "What are the mandatory skills of the ML Engineer job and their minimum levels?",
+    "cypher": "MATCH (:Job {title: 'ML Engineer'})-[r:REQUIRES_SKILL {priority: 'MANDATORY'}]->(s:Skill) RETURN s.name AS skill, r.minLevel AS minLevel"
+  },
+  {
+    "id": "B07",
+    "difficulty": "medium",
+    "question": "Which companies has Karim Alaoui worked for, and in which roles?",
+    "cypher": "MATCH (:Candidate {name: 'Karim Alaoui'})-[:HAS_EXPERIENCE]->(e:WorkExperience)-[:AT_ORGANIZATION]->(o:Organization) RETURN o.name AS organization, e.roleTitle AS role"
+  },
+  {
+    "id": "B08",
+    "difficulty": "medium",
+    "question": "Which skill claims are still unverified?",
+    "cypher": "MATCH (c:Candidate)-[:MAKES_CLAIM]->(cl:SkillClaim {verificationStatus: 'UNVERIFIED'})-[:ABOUT_SKILL]->(s:Skill) RETURN c.candidateId AS candidateId, s.name AS skill"
+  },
+  {
+    "id": "B09",
+    "difficulty": "medium",
+    "question": "Which candidates can work onsite in Casablanca?",
+    "cypher": "MATCH (c:Candidate)-[:AVAILABLE_ONSITE_IN]->(:City {name: 'Casablanca'}) RETURN c.candidateId AS candidateId, c.name AS name"
+  },
+  {
+    "id": "B10",
+    "difficulty": "hard-alias",
+    "question": "Which candidates claim ML?",
+    "cypher": "MATCH (:Alias {key: 'ml'})-[:ALIAS_OF]->(s:Skill)<-[:ABOUT_SKILL]-(:SkillClaim)<-[:MAKES_CLAIM]-(c:Candidate) RETURN c.candidateId AS candidateId, c.name AS name"
+  },
+  {
+    "id": "B11",
+    "difficulty": "hard-alias",
+    "question": "Which candidates claim Java?",
+    "cypher": "MATCH (:Alias {key: 'java'})-[:ALIAS_OF]->(s:Skill)<-[:ABOUT_SKILL]-(:SkillClaim)<-[:MAKES_CLAIM]-(c:Candidate) RETURN c.candidateId AS candidateId, c.name AS name"
+  },
+  {
+    "id": "B12",
+    "difficulty": "hard-rule",
+    "question": "Which candidates meet all mandatory skill requirements of job J01?",
+    "cypher": "MATCH (j:Job {jobId: 'J01'})-[:REQUIRES_SKILL {priority: 'MANDATORY'}]->(ms:Skill) WITH j, count(ms) AS nMand MATCH (j)-[r:REQUIRES_SKILL {priority: 'MANDATORY'}]->(s:Skill)<-[:ABOUT_SKILL]-(cl:SkillClaim {verificationStatus: 'VERIFIED'})<-[:MAKES_CLAIM]-(c:Candidate) WHERE cl.level >= r.minLevel WITH nMand, c, count(DISTINCT s) AS nMet WHERE nMet = nMand RETURN c.candidateId AS candidateId, c.name AS name"
+  },
+  {
+    "id": "B13",
+    "difficulty": "hard-rule",
+    "question": "Which open jobs require Python as a mandatory skill and list Docker as a preferred skill?",
+    "cypher": "MATCH (j:Job {status: 'OPEN'})-[:REQUIRES_SKILL {priority: 'MANDATORY'}]->(:Skill {name: 'Python'}) MATCH (j)-[:REQUIRES_SKILL {priority: 'PREFERRED'}]->(:Skill {name: 'Docker'}) RETURN j.jobId AS jobId, j.title AS title"
+  },
+  {
+    "id": "B14",
+    "difficulty": "medium",
+    "question": "How many different candidates applied to each job?",
+    "cypher": "MATCH (c:Candidate)-[:SUBMITTED]->(a:Application)-[:FOR_JOB]->(j:Job), (a)-[:HAS_EVENT]->(:ApplicationEvent {type: 'APPLIED'}) RETURN j.jobId AS jobId, count(DISTINCT c) AS applicants"
+  },
+  {
+    "id": "B15",
+    "difficulty": "medium",
+    "question": "Show Youssef Karim's application events for the Graph Data Engineer job in chronological order.",
+    "cypher": "MATCH (:Candidate {name: 'Youssef Karim'})-[:SUBMITTED]->(a:Application)-[:FOR_JOB]->(:Job {title: 'Graph Data Engineer'}), (a)-[:HAS_EVENT]->(ev:ApplicationEvent) RETURN ev.type AS type, ev.at AS at ORDER BY ev.at"
+  },
+  {
+    "id": "B16",
+    "difficulty": "medium",
+    "question": "Which recruiters made decisions on applications, and what did they decide?",
+    "cypher": "MATCH (r:Recruiter)<-[:PERFORMED_BY]-(ev:ApplicationEvent) RETURN r.name AS recruiter, ev.decision AS decision"
+  },
+  {
+    "id": "B17",
+    "difficulty": "medium",
+    "question": "Which candidates used Python in a job that is still ongoing?",
+    "cypher": "MATCH (c:Candidate)-[:HAS_EXPERIENCE]->(e:WorkExperience)-[:USED_SKILL]->(:Skill {name: 'Python'}) WHERE e.endDate IS NULL RETURN DISTINCT c.candidateId AS candidateId, c.name AS name"
+  },
+  {
+    "id": "B18",
+    "difficulty": "hard",
+    "question": "Which skills are mandatory for jobs published by Maghreb Cloud Systems?",
+    "cypher": "MATCH (:Organization {name: 'Maghreb Cloud Systems'})<-[:PUBLISHED_BY]-(:Job)-[:REQUIRES_SKILL {priority: 'MANDATORY'}]->(s:Skill) RETURN DISTINCT s.name AS skill"
+  },
+  {
+    "id": "B19",
+    "difficulty": "medium",
+    "question": "Which skill claims have been refuted?",
+    "cypher": "MATCH (c:Candidate)-[:MAKES_CLAIM]->(:SkillClaim {verificationStatus: 'REFUTED'})-[:ABOUT_SKILL]->(s:Skill) RETURN c.candidateId AS candidateId, s.name AS skill"
+  },
+  {
+    "id": "B20",
+    "difficulty": "hard-temporal",
+    "question": "What was candidate C01's assessed Python level as of 1 January 2025?",
+    "cypher": "MATCH (:Candidate {candidateId: 'C01'})-[:MAKES_CLAIM]->(cl:SkillClaim)-[:ABOUT_SKILL]->(:Skill {name: 'Python'}), (sa:SkillAssessment)-[:ASSESSES]->(cl) WHERE sa.assessedAt IS NOT NULL AND sa.assessedAt <= date('2025-01-01') WITH sa ORDER BY sa.assessedAt DESC LIMIT 1 RETURN sa.level AS level"
+  },
+  {
+    "id": "B21",
+    "difficulty": "hard-ambiguity",
+    "question": "Which skills does the Amina Idrissi who lives in Tangier claim?",
+    "cypher": "MATCH (c:Candidate {name: 'Amina Idrissi'})-[:LIVES_IN]->(:City {name: 'Tangier'}) MATCH (c)-[:MAKES_CLAIM]->(:SkillClaim)-[:ABOUT_SKILL]->(s:Skill) RETURN s.name AS skill"
+  },
+  {
+    "id": "B22",
+    "difficulty": "hard-temporal",
+    "question": "Which candidates have overlapping work experiences?",
+    "cypher": "MATCH (c:Candidate)-[:HAS_EXPERIENCE]->(a:WorkExperience), (c)-[:HAS_EXPERIENCE]->(b:WorkExperience) WHERE a.experienceId < b.experienceId AND a.startDate <= coalesce(b.endDate, date('2026-11-12')) AND b.startDate <= coalesce(a.endDate, date('2026-11-12')) RETURN DISTINCT c.candidateId AS candidateId, c.name AS name"
+  }
+]
