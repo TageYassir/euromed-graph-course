@@ -1,0 +1,4 @@
+project_id,name,experience_id,start_date,end_date,skills_used
+P01,Skills graph prototype,E01,2024-06-01,2024-12-15,S01|S03|S02
+P02,Clickstream batch pipeline,E08,2023-04-01,2023-12-31,S10|S01
+P03,Ontology alignment toolkit,E07,2025-02-01,2025-08-31,S11|S09

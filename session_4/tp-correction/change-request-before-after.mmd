@@ -1,0 +1,22 @@
+flowchart LR
+  subgraph BEFORE["BEFORE (v1): one claim, one level, one status"]
+    direction LR
+    c1["Candidate C01"] -- MAKES_CLAIM --> cl1["SkillClaim CL-C01-S01<br/>level 3<br/>verificationStatus VERIFIED"]
+    cl1 -- ABOUT_SKILL --> s1["Skill S01 Python"]
+    cl1 -- EVIDENCED_BY --> e1["WorkExperience E01"]
+  end
+  subgraph AFTER["AFTER (v2): claim kept, assessments accumulate"]
+    direction LR
+    c2["Candidate C01"] -- MAKES_CLAIM --> cl2["SkillClaim CL-C01-S01<br/>level 3 (declared)<br/>verificationStatus VERIFIED (v1 summary)"]
+    cl2 -- ABOUT_SKILL --> s2["Skill S01 Python"]
+    m["SkillAssessment ...-V1<br/>level 3, date NULL<br/>origin MIGRATED_FROM_V1_CLAIM"] -- ASSESSES --> cl2
+    a24["SkillAssessment 2024-03-15<br/>level 1, TECHNICAL_INTERVIEW"] -- ASSESSES --> cl2
+    a25["SkillAssessment 2025-06-01<br/>level 2, TAKE_HOME_TEST"] -- ASSESSES --> cl2
+    a26["SkillAssessment 2026-05-10<br/>level 3, CODE_REVIEW"] -- ASSESSES --> cl2
+    a24 -- ASSESSED_BY --> x1["Assessor A01"]
+    a25 -- ASSESSED_BY --> x1
+    a26 -- ASSESSED_BY --> x2["Recruiter:Assessor R02"]
+    a26 -- BASED_ON --> e2["WorkExperience E01"]
+    a26 -- BASED_ON --> p2["Project P01"]
+    c2 -. "DISPUTES {2025-06-05, reason, OPEN}" .-> a25
+  end
