@@ -1,0 +1,51 @@
+flowchart LR
+  classDef core fill:#E8F0FE,stroke:#1A56DB,color:#111;
+  classDef reified fill:#FFF4E5,stroke:#C2410C,color:#111;
+  classDef ref fill:#ECFDF5,stroke:#047857,color:#111;
+  classDef v2 fill:#F5F3FF,stroke:#6D28D9,color:#111,stroke-dasharray: 5 3;
+
+  C["<b>Candidate</b><br/>candidateId PK<br/>name<br/>remoteAvailable: bool|null"]:::core
+  CL["<b>SkillClaim</b><br/>claimId PK<br/>level 1..3 (declared)<br/>verificationStatus<br/>VERIFIED|UNVERIFIED|REFUTED<br/>source"]:::reified
+  S["<b>Skill</b> (canonical)<br/>skillId PK<br/>name"]:::ref
+  AL["<b>Alias</b><br/>key PK (lower/trim)<br/>label"]:::ref
+  CAT["<b>SkillCategory</b><br/>categoryId PK, name"]:::ref
+  E["<b>WorkExperience</b><br/>experienceId PK<br/>roleTitle, employmentType<br/>startDate: date<br/>endDate: date|null (=ongoing)"]:::reified
+  P["<b>Project</b><br/>projectId PK<br/>name, startDate, endDate"]:::core
+  O["<b>Organization</b><br/>orgId PK, name"]:::core
+  CI["<b>City</b><br/>cityId PK, name, countryCode"]:::ref
+  J["<b>Job</b><br/>jobId PK, title<br/>workMode REMOTE|HYBRID|ONSITE<br/>status OPEN|CLOSED"]:::core
+  A["<b>Application</b><br/>applicationId PK<br/>(one per candidate+job)"]:::reified
+  EV["<b>ApplicationEvent</b><br/>eventId PK, type<br/>at: datetime, seq, attemptNo<br/>decision, note"]:::reified
+  R["<b>Recruiter</b><br/>recruiterId PK, name"]:::core
+  SA["<b>SkillAssessment</b> (v2)<br/>assessmentId PK, level<br/>assessedAt: date|null<br/>method, outcome, origin"]:::v2
+  AS["<b>Assessor</b> (v2)<br/>assessorId PK"]:::v2
+
+  C -- "MAKES_CLAIM 1:N" --> CL
+  CL -- "ABOUT_SKILL N:1" --> S
+  CL -- "EVIDENCED_BY {evidenceType,<br/>reviewStatus, derivedBy} N:M" --> E
+  CL -- "EVIDENCED_BY N:M" --> P
+  AL -- "ALIAS_OF N:1" --> S
+  S -- "IN_CATEGORY N:1" --> CAT
+  S -- "DISTINCT_FROM {reason}" --> S
+  C -- "HAS_EXPERIENCE 1:N" --> E
+  E -- "AT_ORGANIZATION N:1" --> O
+  E -- "USED_SKILL N:M" --> S
+  P -- "PART_OF N:1" --> E
+  C -- "WORKED_ON N:M" --> P
+  P -- "USED_SKILL N:M" --> S
+  C -- "LIVES_IN N:1" --> CI
+  C -- "AVAILABLE_ONSITE_IN N:M" --> CI
+  O -- "LOCATED_IN N:1" --> CI
+  J -- "PUBLISHED_BY N:1" --> O
+  J -- "BASED_IN N:0..1" --> CI
+  J -- "REQUIRES_SKILL {priority MANDATORY|PREFERRED,<br/>minLevel} N:M" --> S
+  C -- "SUBMITTED 1:N" --> A
+  A -- "FOR_JOB N:1" --> J
+  A -- "HAS_EVENT 1:N" --> EV
+  EV -- "NEXT 0..1" --> EV
+  EV -- "PERFORMED_BY N:0..1" --> R
+  R -- "WORKS_FOR N:1" --> O
+  SA -- "ASSESSES N:1" --> CL
+  SA -- "ASSESSED_BY N:0..1" --> AS
+  SA -- "BASED_ON N:M" --> E
+  C -. "DISPUTES {at, reason, status}" .-> SA

@@ -1,0 +1,8 @@
+job_id,title,org_id,work_mode,onsite_city,status,source
+J01,Graph Data Engineer,O01,HYBRID,Rabat,OPEN,TP
+J02,ML Engineer,O02,REMOTE,,OPEN,TP
+J03,Data Analyst,O02,ONSITE,Casablanca,OPEN,TP
+J04,Knowledge Graph Specialist,O03,REMOTE,,CLOSED,TP
+J05,Big Data Engineer,O04,HYBRID,Casablanca,OPEN,EXT
+J06,Platform Engineer,O04,ONSITE,Rabat,OPEN,EXT
+J07,Semantic Web Engineer,O05,REMOTE,,OPEN,EXT
